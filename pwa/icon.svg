@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<rect width="512" height="512" fill="#1c1a17"/>
+<rect x="24" y="24" width="464" height="464" fill="none" stroke="#a8883c" stroke-opacity=".55" stroke-width="4"/>
+<g transform="rotate(4 256 256)"><rect x="106" y="106" width="300" height="300" fill="#b3261e"/>
+<text x="256" y="238" font-family="Hiragino Mincho ProN, Yu Mincho, serif" font-size="150" font-weight="700" text-anchor="middle" fill="#efe8d8">太</text>
+<text x="256" y="388" font-family="Hiragino Mincho ProN, Yu Mincho, serif" font-size="150" font-weight="700" text-anchor="middle" fill="#efe8d8">一</text></g>
+</svg>

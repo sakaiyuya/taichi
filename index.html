@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c1a17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="板前への道">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="pwa/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="pwa/icon-192.png">
+<title>太一 板前への道 — イサキ三枚おろし</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Yuji+Syuku&family=Zen+Antique&display=swap" rel="stylesheet">
+<style>
+:root{
+  --washi:#efe8d8; --washi2:#e6dcc6; --sumi:#1c1a17; --sumi2:#4a453d;
+  --shu:#b3261e; --ai:#1f3a5f; --kin:#a8883c; --line:rgba(28,26,23,.18);
+  --card:#f6f1e4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  color:var(--sumi);background:var(--washi);line-height:1.9;
+  background-image:
+    radial-gradient(circle at 20% 10%,rgba(168,136,60,.10),transparent 40%),
+    radial-gradient(circle at 85% 80%,rgba(31,58,95,.08),transparent 45%),
+    repeating-linear-gradient(90deg,rgba(28,26,23,.018) 0 1px,transparent 1px 7px);
+  min-height:100vh;
+}
+.wrap{max-width:860px;margin:0 auto;padding:env(safe-area-inset-top,0px) 20px 90px}
+
+/* hero */
+.hero{display:flex;gap:28px;align-items:center;justify-content:center;padding:56px 0 34px;position:relative}
+.tate{writing-mode:vertical-rl;font-family:"Yuji Syuku","Zen Antique",serif;letter-spacing:.35em}
+.hero .main{font-size:clamp(40px,9vw,64px);line-height:1.2}
+.hero .sub{font-size:clamp(15px,3vw,19px);color:var(--sumi2);padding-top:10px}
+.hero .name{font-size:clamp(17px,3.4vw,21px);color:var(--shu);padding-top:24px}
+.hanko{
+  position:absolute;right:2px;top:28px;width:62px;height:62px;border:3px solid var(--shu);color:var(--shu);
+  display:grid;place-items:center;font-family:"Yuji Syuku",serif;font-size:26px;line-height:1.05;text-align:center;
+  border-radius:6px;transform:rotate(6deg);opacity:.9;letter-spacing:0;
+}
+.rule{height:14px;background:
+  linear-gradient(90deg,transparent,var(--sumi) 15%,var(--sumi) 85%,transparent) center/100% 1px no-repeat;
+  position:relative;margin:6px 0 22px}
+.rule::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;background:var(--shu);transform:translate(-50%,-50%) rotate(45deg)}
+
+/* nav */
+nav{display:flex;justify-content:center;gap:4px;position:sticky;top:0;z-index:5;padding:10px 0;background:linear-gradient(var(--washi) 75%,transparent)}
+nav button{
+  font:inherit;font-size:17px;letter-spacing:.3em;padding:8px 16px 8px 19px;background:none;border:none;color:var(--sumi2);cursor:pointer;
+  border-bottom:2px solid transparent;transition:.2s}
+nav button.on{color:var(--shu);border-color:var(--shu);font-weight:800}
+nav button:hover{color:var(--shu)}
+section{display:none;animation:fade .5s ease}
+section.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h2{font-family:"Yuji Syuku",serif;font-weight:400;font-size:28px;letter-spacing:.25em;margin:26px 0 6px}
+.lead{color:var(--sumi2);font-size:15px;margin-bottom:18px}
+
+/* path */
+.status{background:var(--card);border:1px solid var(--line);padding:22px 22px 20px;position:relative;margin-bottom:26px}
+.status::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);pointer-events:none}
+.status .now{font-size:13px;color:var(--sumi2);letter-spacing:.2em}
+.status .rank{font-family:"Yuji Syuku",serif;font-size:46px;letter-spacing:.2em;color:var(--shu);line-height:1.3}
+.status .desc{font-size:15px;margin-bottom:12px}
+.bar{height:6px;background:var(--washi2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--kin),var(--shu));width:0;transition:width .8s ease}
+.status .next{font-size:13px;color:var(--sumi2);margin-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.cta{
+  display:inline-block;margin-top:16px;font:inherit;font-size:18px;letter-spacing:.4em;padding:12px 30px 12px 34px;
+  background:var(--sumi);color:var(--washi);border:none;cursor:pointer;transition:.2s;box-shadow:4px 4px 0 var(--shu)}
+.cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shu)}
+.cta.ghost{background:transparent;color:var(--sumi);border:1px solid var(--sumi);box-shadow:none}
+.cta.ghost:hover{transform:none;background:rgba(28,26,23,.06)}
+
+.ladder{list-style:none;position:relative;padding-left:46px}
+.ladder::before{content:"";position:absolute;left:15px;top:14px;bottom:14px;width:2px;background:var(--line)}
+.ladder li{position:relative;padding:10px 0 14px}
+.ladder li::before{
+  content:"";position:absolute;left:-39px;top:18px;width:18px;height:18px;border-radius:50%;
+  background:var(--washi);border:2px solid var(--line)}
+.ladder li.done::before{background:var(--sumi);border-color:var(--sumi)}
+.ladder li.cur::before{background:var(--shu);border-color:var(--shu);box-shadow:0 0 0 6px rgba(179,38,30,.18)}
+.ladder .t{font-family:"Yuji Syuku",serif;font-size:24px;letter-spacing:.2em}
+.ladder li.future .t{color:#8b8576}
+.ladder .k{font-size:12px;color:var(--sumi2);margin-left:10px;letter-spacing:.1em}
+.ladder .d{font-size:14px;color:var(--sumi2)}
+.ladder li.last .t{color:var(--kin)}
+.ladder li.last.done .t,.ladder li.last.cur .t{color:var(--shu)}
+.reset{margin-top:26px;font:inherit;font-size:13px;color:var(--sumi2);background:none;border:none;text-decoration:underline;cursor:pointer}
+
+/* steps */
+.fish{background:var(--card);border:1px solid var(--line);padding:14px;margin-bottom:20px}
+.fish svg{width:100%;height:auto;display:block}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:22px}
+.facts div{border-left:3px solid var(--shu);padding:2px 12px;font-size:14px}
+.facts b{display:block;font-size:12px;color:var(--sumi2);letter-spacing:.2em;font-weight:400}
+.step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+.step .n{font-family:"Yuji Syuku",serif;font-size:34px;color:var(--shu);min-width:48px;text-align:center;line-height:1.2}
+.step h3{font-size:20px;letter-spacing:.12em;font-weight:800}
+.step p{font-size:15px}
+.step .tip{margin-top:6px;font-size:14px;color:var(--ai)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.tools span{border:1px solid var(--sumi);padding:3px 12px;font-size:14px;letter-spacing:.1em;background:var(--card)}
+
+/* game */
+.g-hud{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:8px}
+.g-no{font-family:"Yuji Syuku",serif;color:var(--shu);font-size:16px;letter-spacing:.3em;line-height:1.3}
+.g-name{font-family:"Yuji Syuku",serif;font-size:clamp(26px,5vw,34px);letter-spacing:.18em;line-height:1.3}
+.g-total{text-align:right;font-size:13px;color:var(--sumi2);letter-spacing:.2em}
+.g-total b{display:block;font-family:"Zen Antique",serif;font-weight:400;font-size:34px;color:var(--sumi);line-height:1.2;letter-spacing:.05em}
+.chips{display:flex;gap:6px;margin-bottom:10px}
+.chips div{flex:1;text-align:center;border:1px solid var(--line);background:var(--card);padding:3px 0;font-size:12px;letter-spacing:.1em;line-height:1.5;color:var(--sumi2)}
+.chips div b{display:block;font-family:"Zen Antique",serif;font-weight:400;font-size:18px;color:var(--sumi)}
+.chips div.cur{border-color:var(--shu);color:var(--shu);box-shadow:inset 0 -3px 0 var(--shu)}
+.board{position:relative;border:2px solid var(--sumi);box-shadow:5px 5px 0 rgba(28,26,23,.25);background:#cdb78a;line-height:0}
+.board canvas{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}
+.ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(239,232,216,.78);backdrop-filter:blur(1.5px);line-height:1.9;text-align:center;padding:18px}
+.ov.hide{display:none}
+.ov .box{background:var(--card);border:1px solid var(--line);padding:22px 26px 26px;max-width:480px;position:relative}
+.ov .box::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);pointer-events:none}
+.ov h3{font-family:"Yuji Syuku",serif;font-weight:400;font-size:30px;letter-spacing:.25em}
+.ov p{font-size:15px;margin-top:4px}
+.g-hint{margin-top:12px;font-size:15px;color:var(--ai);border-left:3px solid var(--ai);padding-left:12px;min-height:3.6em}
+.res{margin-top:18px;background:var(--card);border:1px solid var(--line);padding:22px;position:relative}
+.res::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);pointer-events:none}
+.res .r1{font-size:13px;color:var(--sumi2);letter-spacing:.2em}
+.res .r2{font-family:"Yuji Syuku",serif;font-size:clamp(28px,6vw,40px);letter-spacing:.15em;color:var(--shu);line-height:1.4}
+.res .r3{font-size:15px}
+.res table{width:100%;border-collapse:collapse;margin:12px 0 4px;font-size:15px}
+.res td{padding:5px 2px;border-bottom:1px dashed var(--line)}
+.res td:last-child{text-align:right;font-family:"Zen Antique",serif;font-size:18px}
+.res .up{margin-top:10px;font-family:"Yuji Syuku",serif;font-size:24px;letter-spacing:.2em;color:var(--kin)}
+.res .btns{display:flex;gap:12px;flex-wrap:wrap}
+
+footer{text-align:center;color:var(--sumi2);font-size:13px;letter-spacing:.2em;margin-top:50px}
+.board.port{width:min(100%,calc((100svh - 210px)*.535));min-width:min(100%,280px);margin:0 auto}
+@media(max-width:520px){
+  .hanko{width:50px;height:50px;font-size:20px;top:18px}
+  .step{gap:10px}.step .n{min-width:36px;font-size:28px}
+  .chips div{font-size:10px}.chips div b{font-size:15px}
+  .ov .box{padding:14px 14px 18px}.ov h3{font-size:24px}.ov p{font-size:13px}.ov .cta{margin-top:8px;padding:8px 22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="tate sub">イサキ三枚おろし 稽古帖</div>
+  <div class="tate main">板前への道</div>
+  <div class="tate name">中村 太一</div>
+  <div class="hanko">太<br>一</div>
+</header>
+<div class="rule"></div>
+
+<nav id="nav">
+  <button data-t="michi" class="on">道</button>
+  <button data-t="tejun">手順</button>
+  <button data-t="keiko">稽古</button>
+</nav>
+
+<!-- 道 -->
+<section id="michi" class="on">
+  <div class="status">
+    <div class="now">現在の位</div>
+    <div class="rank" id="rank">—</div>
+    <div class="desc" id="rankDesc"></div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="next"><span id="nextTxt"></span><span id="cnt"></span></div>
+    <button class="cta" id="goKeiko">稽古を始める</button>
+  </div>
+  <h2>修行の道</h2>
+  <p class="lead">刃の筋が美しいほど、修行点は貯まる。花板を目指せ、太一。</p>
+  <ul class="ladder" id="ladder"></ul>
+  <button class="reset" id="reset">修行をはじめからやり直す</button>
+</section>
+
+<!-- 手順 -->
+<section id="tejun">
+  <h2>イサキを知る</h2>
+  <div class="facts">
+    <div><b>旬</b>梅雨〜夏（5〜8月）</div>
+    <div><b>大きさ</b>25〜40cm が扱いやすい</div>
+    <div><b>特徴</b>鱗は細かく硬い／背びれの棘が鋭い</div>
+    <div><b>身質</b>皮目に旨みと脂。刺身・焼き・塩焼きに</div>
+  </div>
+  <div class="fish">
+    <svg viewBox="0 0 600 190" role="img" aria-label="イサキの切り込み位置">
+      <path d="M40 98 C85 40 190 24 300 34 C410 42 490 70 540 98 L584 62 L574 98 L584 134 L540 98 C490 136 410 154 300 160 C190 168 85 150 40 98Z"
+            fill="#e6dcc6" stroke="#1c1a17" stroke-width="1.6"/>
+      <path d="M170 30 L180 6 L200 24 L222 4 L242 26 L264 6 L284 30" fill="none" stroke="#1c1a17" stroke-width="1.4"/>
+      <circle cx="92" cy="86" r="9" fill="#f6f1e4" stroke="#1c1a17" stroke-width="1.4"/><circle cx="92" cy="86" r="3.5" fill="#1c1a17"/>
+      <line x1="150" y1="40" x2="136" y2="156" stroke="#b3261e" stroke-width="2.2" stroke-dasharray="6 5"/>
+      <text x="136" y="178" font-size="13" fill="#b3261e" text-anchor="middle" font-family="serif">① 頭を落とす</text>
+      <line x1="150" y1="98" x2="545" y2="98" stroke="#1f3a5f" stroke-width="2.2" stroke-dasharray="3 5"/>
+      <text x="350" y="90" font-size="13" fill="#1f3a5f" text-anchor="middle" font-family="serif">② 中骨に沿って包丁を滑らせる</text>
+      <text x="330" y="150" font-size="12" fill="#7a6322" text-anchor="middle" font-family="serif">腹側</text>
+      <text x="330" y="50" font-size="12" fill="#7a6322" text-anchor="middle" font-family="serif">背側</text>
+    </svg>
+  </div>
+  <h2>用意する道具</h2>
+  <div class="tools"><span>出刃包丁</span><span>柳刃（皮引き）</span><span>うろこ引き</span><span>骨抜き</span><span>まな板</span><span>濡れ布巾</span><span>乾いた布巾</span><span>バット</span></div>
+  <h2>十一の手順</h2>
+  <div id="stepList"></div>
+</section>
+
+<!-- 稽古 -->
+<section id="keiko">
+  <div class="g-hud">
+    <div><div class="g-no" id="gNo">稽古</div><div class="g-name" id="gName">イサキを三枚におろす</div></div>
+    <div class="g-total">合計<b id="gTotal">0</b></div>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="board">
+    <canvas id="cv"></canvas>
+    <div class="ov" id="ov">
+      <div class="box">
+        <h3>三枚おろし</h3>
+        <p>朱い「入」の点から「出」まで、点線をなぞって包丁を引け。<br>筋が線に沿って滑らかなほど高得点。<br>全五手、頭落としから尾の付け根まで。</p>
+        <button class="cta" id="gStart">包丁を持つ</button>
+      </div>
+    </div>
+  </div>
+  <p class="g-hint" id="gHint">マウス・指で、線をなぞって切る。</p>
+  <div id="gRes"></div>
+</section>
+
+<footer>— 道は一匹から —</footer>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const STEPS = [
+  {t:"鱗を引く", b:"うろこ引きを尾から頭へ向けて動かし、鱗をきれいに落とす。ヒレの付け根、腹、頭のまわりまで丁寧に。", tip:"イサキの鱗は細かくて硬い。ビニール袋の中や流水の下で引くと飛び散らない。"},
+  {t:"ヒレを落とす", b:"背びれ・胸びれ・腹びれ・尻びれを切り落とす。背びれの棘は特に鋭いので最初に処理する。", tip:"棘で手を刺さないよう、背びれは頭側から尾に向けて、手を添える位置に注意。"},
+  {t:"頭を落とす", b:"胸びれの付け根に沿って斜めに包丁を入れ、身を残すようにカマの手前を切る。裏返して同じく切り、中骨を断つ。", tip:"頭の方へ包丁を入れすぎない。身を削らず、中骨は体重をかけて一気に断つ。"},
+  {t:"腹を開き内臓を出す", b:"肛門から切り込み、腹を浅く裂く。内臓を傷つけないよう、包丁の先だけを使う。", tip:"刃を深く入れると胆のうや内臓が破れて身が汚れる。浅く、一息で。"},
+  {t:"腹の中を洗う", b:"中骨に沿った血合いを包丁の先で割り、冷水で洗い流す。洗ったら水気を布巾で完全に拭き取る。", tip:"水気が残ると包丁が滑る。拭き取りは仕事のうち。"},
+  {t:"腹側から包丁を入れる", b:"頭側から尾に向けて、腹側の中骨の上に包丁を入れる。刃を寝かせ、骨に当てながら滑らせる。", tip:"包丁を引くとき、刃全体を使う。押さず、引いて切る。"},
+  {t:"背側から包丁を入れる", b:"魚を返して、背側にも同じく中骨に沿って包丁を入れる。腹側と背側の切り込みを揃える。", tip:"左手でしっかり魚を押さえる。切り込みの深さが揃えば、仕上がりも揃う。"},
+  {t:"尾の付け根で身を離す", b:"尾の付け根の皮一枚を残して中骨の上を貫通させ、尾の手前で身を切り離す。これで上身が取れる。", tip:"最後まで力を抜かず、包丁の角度を保つ。最後に尾で皮を切り離す。"},
+  {t:"裏返して下身を取る", b:"魚を返し、背側から先に包丁を入れて、同じ手順で下身を取る。これで上身・下身・中骨の三枚になる。", tip:"表でうまくいった感覚をそのまま裏でも再現する。"},
+  {t:"腹骨をすく", b:"身の腹側に残る腹骨を、根元から包丁を寝かせて薄くすき取る。", tip:"骨に身をつけず、骨は薄く。包丁の刃を骨の下に差し込む感覚で。"},
+  {t:"血合い骨を抜く", b:"身の中央の血合い骨を、骨抜きで頭側から指で押さえつつ、骨が出ている方向へまっすぐ引き抜く。必要なら皮を引く。", tip:"骨の向きに逆らうと身が崩れる。ゆっくり、真っ直ぐ。"}
+];
+const RANKS = [
+  {n:0,    t:"見習い",   k:"みならい",   d:"まずは包丁を握るところから。一匹目を丁寧に。"},
+  {n:150,  t:"追い回し", k:"おいまわし", d:"基本が体に入り始める。線を外さない手つきを。"},
+  {n:400,  t:"焼き場",   k:"やきば",     d:"魚の扱いに慣れ、無駄のない動きができてきた。"},
+  {n:800,  t:"煮方",     k:"にかた",     d:"手際が整い、おろしの精度が安定してくる。"},
+  {n:1400, t:"脇板",     k:"わきいた",   d:"任される仕事が増える。仕上がりの美しさを磨け。"},
+  {n:2200, t:"立板",     k:"たていた",   d:"刺身を引く立場へ。包丁の切れ味が料理を決める。"},
+  {n:3200, t:"花板",     k:"はないた",   d:"板場の頂点、一流の料理人。道は、ここから先も続く。"}
+];
+const KANJI = ["","一","二","三","四","五","六","七","八","九"];
+const toKanji = n => n<10 ? KANJI[n] : n===10 ? "十" : "十"+KANJI[n-10];
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- 保存 ---------- */
+const KEY = "taichi-isaki-game-v1";
+let store = {xp:0, best:0, plays:0};
+try { Object.assign(store, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch(e){}
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} };
+const rankIndex = xp => { let i=0; RANKS.forEach((r,j)=>{ if(xp>=r.n) i=j; }); return i; };
+
+/* ---------- タブ ---------- */
+function show(t){
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on", s.id===t));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on", b.dataset.t===t));
+  window.scrollTo({top: t==="keiko" ? $("#keiko").getBoundingClientRect().top+window.scrollY-58 : 0, behavior:"smooth"});
+}
+$("#nav").addEventListener("click", e=>{ const b=e.target.closest("button"); if(b) show(b.dataset.t); });
+$("#goKeiko").onclick = ()=>show("keiko");
+
+/* ---------- 道 ---------- */
+function renderMichi(){
+  const xp = store.xp, i = rankIndex(xp), r = RANKS[i], nx = RANKS[i+1];
+  $("#rank").textContent = r.t;
+  $("#rankDesc").textContent = r.d;
+  $("#cnt").textContent = `修行点 ${xp}　稽古 ${store.plays} 回　最高 ${store.best} 点`;
+  if(nx){
+    $("#bar").style.width = ((xp - r.n) / (nx.n - r.n) * 100) + "%";
+    $("#nextTxt").textContent = `次の位「${nx.t}」まであと ${nx.n - xp} 点`;
+  } else {
+    $("#bar").style.width = "100%";
+    $("#nextTxt").textContent = "最高位に到達。さらなる高みへ。";
+  }
+  $("#ladder").innerHTML = RANKS.map((x,j)=>{
+    const cls = [j<i?"done":j===i?"cur":"future", j===RANKS.length-1?"last":""].join(" ");
+    return `<li class="${cls}"><div><span class="t">${x.t}</span><span class="k">${x.k}</span></div>
+      <div class="d">${x.n===0?"入門":`修行点 ${x.n}`}　${esc(x.d)}</div></li>`;
+  }).join("");
+}
+$("#reset").onclick = ()=>{
+  if(confirm("修行点をすべて消して、はじめからやり直します。よろしいですか？")){
+    store = {xp:0,best:0,plays:0}; persist(); renderMichi();
+  }
+};
+
+/* ---------- 手順 ---------- */
+$("#stepList").innerHTML = STEPS.map((s,i)=>`
+  <div class="step"><div class="n">${toKanji(i+1)}</div>
+  <div><h3>${s.t}</h3><p>${s.b}</p><div class="tip">${s.tip}</div></div></div>`).join("");
+
+/* =====================================================
+   稽古：筋をなぞって魚をおろすゲーム
+   ===================================================== */
+const W = 800, H = 428, MID = H/2;
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+const cv = $("#cv");
+const ctx = cv.getContext("2d");
+// 狭い画面（スマホ）では盤面を90度回して縦長にし、魚を大きく使う
+let PORT = false;
+function applySize(){
+  PORT = window.innerWidth <= 640;
+  cv.width = (PORT?H:W)*DPR; cv.height = (PORT?W:H)*DPR;
+  document.querySelector(".board").classList.toggle("port", PORT);
+}
+applySize();
+window.addEventListener("resize", applySize);
+// 回した盤面の上でも文字は正立させる
+function upright(x,y,fn){ ctx.save(); ctx.translate(x,y); if(PORT) ctx.rotate(-Math.PI/2); fn(); ctx.restore(); }
+
+const bez = (p0,p1,p2,p3,n=120)=>{
+  const o=[]; for(let i=0;i<=n;i++){ const t=i/n,u=1-t;
+    o.push([u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],
+            u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]]); }
+  return o;
+};
+// 魚座標系の切り筋
+const CURVE = {
+  H: bez([260,92],[214,150],[214,262],[236,336]),     // 頭落とし
+  A: bez([236,236],[340,246],[520,238],[690,218]),    // 腹側
+  B: bez([236,194],[340,188],[520,200],[690,208])     // 背側
+};
+const CUTS = [
+  {k:"H", name:"頭を落とす",       short:"頭落とし", flip:false, tip:"胸びれの後ろを斜めに。一息で、迷わず引き切る。"},
+  {k:"A", name:"腹から包丁を入れる", short:"腹から",   flip:false, tip:"中骨に沿って、頭から尾へ。包丁を寝かせて、すーっと引く。"},
+  {k:"B", name:"背から包丁を入れる", short:"背から",   flip:false, tip:"背側も同じ要領で。線の上を、一定の速さで。"},
+  {k:"B", name:"裏返して背から",     short:"裏・背",   flip:true,  tip:"魚を裏返した。表で掴んだ感覚をそのまま再現する。"},
+  {k:"A", name:"裏返して腹から",     short:"裏・腹",   flip:true,  tip:"最後の一太刀。尾の付け根まで、力を抜かずに。"}
+];
+const mir = p => [p[0], H-p[1]];
+const dist = (a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+const minDist = (p,pts)=>{ let m=1e9; for(const q of pts){ const d=dist(p,q); if(d<m) m=d; } return m; };
+const clamp = (v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+
+/* --- 領域（切り分け用ポリゴン） --- */
+const poly = pts => { const p=new Path2D(); p.moveTo(pts[0][0],pts[0][1]); for(let i=1;i<pts.length;i++) p.lineTo(pts[i][0],pts[i][1]); p.closePath(); return p; };
+const Hs = [[262,-20],...CURVE.H,[232,450]];
+const Rp = poly([...Hs,[820,450],[820,-20]]);
+const headP = poly([...Hs,[-20,450],[-20,-20]]);
+const Be = [[150,CURVE.B[0][1]],...CURVE.B], Ae = [[150,CURVE.A[0][1]],...CURVE.A];
+const bEnd = CURVE.B[CURVE.B.length-1], aEnd = CURVE.A[CURVE.A.length-1];
+const upP = poly([[150,-20],[692,-20],[692,bEnd[1]],...Be.slice().reverse()]);
+const loP = poly([[150,450],[692,450],[692,aEnd[1]],...Ae.slice().reverse()]);
+const stripP = poly([...Be,[692,bEnd[1]],[692,-20],[820,-20],[820,450],[692,450],[692,aEnd[1]],...Ae.slice().reverse()]);
+
+/* --- まな板（オフスクリーン） --- */
+const board = document.createElement("canvas"); board.width=W*DPR; board.height=H*DPR;
+(function(){
+  const g = board.getContext("2d"); g.scale(DPR,DPR);
+  const gr = g.createLinearGradient(0,0,0,H);
+  gr.addColorStop(0,"#d6c195"); gr.addColorStop(1,"#c4ab7c");
+  g.fillStyle=gr; g.fillRect(0,0,W,H);
+  let s=7; const rnd=()=>{ s=(s*16807)%2147483647; return s/2147483647; };
+  for(let i=0;i<46;i++){
+    const y=rnd()*H, a=.05+rnd()*.12;
+    g.strokeStyle=`rgba(90,62,28,${a})`; g.lineWidth=.6+rnd()*1.6;
+    g.beginPath(); g.moveTo(0,y);
+    g.bezierCurveTo(W*.3,y+(rnd()-.5)*14,W*.65,y+(rnd()-.5)*14,W,y+(rnd()-.5)*10); g.stroke();
+  }
+  const vg = g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.65);
+  vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(60,36,10,.28)");
+  g.fillStyle=vg; g.fillRect(0,0,W,H);
+})();
+
+/* --- イサキ（オフスクリーン） --- */
+const fc = document.createElement("canvas"); fc.width=W*DPR; fc.height=H*DPR;
+(function(){
+  const g = fc.getContext("2d"); g.scale(DPR,DPR);
+  g.lineJoin="round"; g.lineCap="round";
+  const ink="#2b241b";
+  // 尾びれ
+  g.fillStyle="#8c7a52"; g.strokeStyle=ink; g.lineWidth=1.6;
+  g.beginPath(); g.moveTo(680,205); g.lineTo(782,142); g.quadraticCurveTo(752,214,782,286); g.lineTo(680,223); g.closePath(); g.fill(); g.stroke();
+  g.strokeStyle="rgba(43,36,27,.35)"; g.lineWidth=1;
+  for(let i=0;i<7;i++){ g.beginPath(); g.moveTo(692,214); g.lineTo(776,152+i*21); g.stroke(); }
+  // 背びれ
+  g.fillStyle="#8a7a52"; g.strokeStyle=ink; g.lineWidth=1.4;
+  g.beginPath();
+  [[236,124],[262,84],[286,108],[318,76],[346,102],[380,72],[412,100],[446,78],[478,106],[512,92],[540,114],[584,138],[584,160],[236,160]].forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));
+  g.closePath(); g.fill(); g.stroke();
+  // 腹びれ・尻びれ
+  g.fillStyle="#a89870";
+  g.beginPath(); g.moveTo(292,300); g.lineTo(316,356); g.lineTo(356,312); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.moveTo(548,284); g.lineTo(586,336); g.lineTo(614,306); g.lineTo(646,262); g.closePath(); g.fill(); g.stroke();
+  // 胴
+  const body=()=>{ g.beginPath(); g.moveTo(70,215); g.bezierCurveTo(110,150,220,105,360,105); g.bezierCurveTo(480,105,600,160,690,205);
+    g.lineTo(690,225); g.bezierCurveTo(600,275,480,322,360,322); g.bezierCurveTo(220,322,110,280,70,215); g.closePath(); };
+  const bg=g.createLinearGradient(0,100,0,325);
+  bg.addColorStop(0,"#6f6040"); bg.addColorStop(.35,"#a99868"); bg.addColorStop(.62,"#d8d0b4"); bg.addColorStop(1,"#f3eedd");
+  body(); g.fillStyle=bg; g.fill();
+  g.save(); body(); g.clip();
+  g.strokeStyle="rgba(255,255,255,.17)"; g.lineWidth=1;
+  for(let r=0,y=112;y<330;y+=12,r++) for(let x=90+(r%2)*7;x<690;x+=14){ g.beginPath(); g.arc(x,y,8,-1.0,1.0); g.stroke(); }
+  g.strokeStyle="rgba(43,36,27,.28)"; g.lineWidth=1.4;
+  g.beginPath(); g.moveTo(205,168); g.bezierCurveTo(330,150,520,166,690,208); g.stroke();
+  const hl=g.createLinearGradient(0,100,0,200); hl.addColorStop(0,"rgba(0,0,0,.18)"); hl.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle=hl; g.fillRect(60,100,640,100);
+  g.restore();
+  body(); g.strokeStyle=ink; g.lineWidth=2; g.stroke();
+  // えら・胸びれ・目・口
+  g.strokeStyle="rgba(43,36,27,.6)"; g.lineWidth=2;
+  g.beginPath(); g.moveTo(232,116); g.bezierCurveTo(196,170,196,262,226,314); g.stroke();
+  g.lineWidth=1; g.beginPath(); g.moveTo(222,124); g.bezierCurveTo(188,172,188,262,214,308); g.stroke();
+  g.fillStyle="rgba(160,140,96,.9)"; g.strokeStyle=ink; g.lineWidth=1.3;
+  g.beginPath(); g.moveTo(246,236); g.quadraticCurveTo(204,262,218,296); g.quadraticCurveTo(268,288,300,254); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.arc(128,188,13,0,7); g.fillStyle="#d9b95a"; g.fill(); g.stroke();
+  g.beginPath(); g.arc(128,188,8,0,7); g.fillStyle="#14110d"; g.fill();
+  g.beginPath(); g.arc(125,185,2.4,0,7); g.fillStyle="#fff"; g.fill();
+  g.strokeStyle=ink; g.lineWidth=1.6; g.beginPath(); g.moveTo(72,217); g.quadraticCurveTo(92,226,112,226); g.stroke();
+})();
+
+/* --- ゲーム状態 --- */
+const O = {h:[0,0],u:[0,0],s:[0,0],l:[0,0]};
+const T = {h:[0,0],u:[0,0],s:[0,0],l:[0,0]};
+let G = newState();
+function newState(){
+  return {phase:"idle", cut:0, scores:[], marks:[], stroke:null, sd:[], drawing:false, guide:[],
+          flipV:0, fa:null, pops:[], msg:null, splitAt:0};
+}
+const grade = s => s>=90?"見事": s>=75?"上出来": s>=60?"まずまず": s>=40?"精進せよ":"身が崩れた";
+const gcol  = s => s>=90?"#d8b04a": s>=75?"#7fae6a": s>=60?"#e0a04a": "#c4443a";
+const rankTitle = s => s>=92?"花板の腕前": s>=82?"立板の腕前": s>=70?"脇板の腕前": s>=55?"煮方の腕前": s>=40?"追い回しの腕前":"見習いの腕前";
+const toScreen = (p,flip)=> flip ? mir(p) : p;
+
+function setHud(){
+  const c = CUTS[Math.min(G.cut,4)];
+  if(G.phase==="idle"){ $("#gNo").textContent="稽古"; $("#gName").textContent="イサキを三枚におろす"; }
+  else if(G.cut<5){ $("#gNo").textContent=`第${toKanji(G.cut+1)}手`; $("#gName").textContent=c.name; }
+  else { $("#gNo").textContent="仕上がり"; $("#gName").textContent="三枚おろし完了"; }
+  $("#gTotal").textContent = G.scores.length ? Math.round(G.scores.reduce((a,b)=>a+b,0)/CUTS.length) : 0;
+  $("#chips").innerHTML = CUTS.map((x,i)=>`<div class="${i===G.cut&&G.phase!=="idle"&&G.cut<5?"cur":""}">${x.short}<b>${G.scores[i]!==undefined?G.scores[i]:"—"}</b></div>`).join("");
+}
+
+function startGame(){
+  G = newState(); G.phase="cut";
+  for(const k in O){ O[k]=[0,0]; T[k]=[0,0]; }
+  $("#ov").classList.add("hide"); $("#gRes").innerHTML="";
+  window.scrollTo({top:$("#keiko").getBoundingClientRect().top+window.scrollY-58,behavior:"smooth"});
+  prepCut();
+}
+function prepCut(){
+  const c = CUTS[G.cut];
+  G.phase="cut"; G.stroke=null; G.drawing=false;
+  G.guide = CURVE[c.k].map(p=>toScreen(p,c.flip));
+  $("#gHint").textContent = c.tip;
+  setHud();
+}
+$("#gStart").onclick = startGame;
+
+/* --- 採点 --- */
+function evaluate(stroke, guide){
+  const sm = stroke.map((p,i)=>{
+    const a=stroke[Math.max(0,i-1)], b=stroke[Math.min(stroke.length-1,i+1)];
+    return [(a[0]+p[0]+b[0])/3,(a[1]+p[1]+b[1])/3];
+  });
+  sm[0]=stroke[0]; sm[sm.length-1]=stroke[stroke.length-1];
+  const rs=[sm[0]]; let acc=0;
+  for(let i=1;i<sm.length;i++){
+    let a=sm[i-1], b=sm[i], seg=dist(a,b);
+    while(acc+seg>=10){ const t=(10-acc)/seg; a=[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t]; rs.push(a); seg=dist(a,b); acc=0; }
+    acc+=seg;
+  }
+  rs.push(sm[sm.length-1]);
+  if(rs.length<6) return null;
+  const ds = rs.map(p=>minDist(p,guide));
+  const mean = ds.reduce((a,b)=>a+b,0)/ds.length;
+  const sorted = ds.slice().sort((a,b)=>a-b), p90 = sorted[Math.floor(sorted.length*.9)];
+  const cov = guide.filter(g=>minDist(g,rs)<=30).length/guide.length;
+  let jit=0,n=0;
+  for(let i=2;i<rs.length;i++){
+    const a1=Math.atan2(rs[i-1][1]-rs[i-2][1], rs[i-1][0]-rs[i-2][0]);
+    const a2=Math.atan2(rs[i][1]-rs[i-1][1], rs[i][0]-rs[i-1][0]);
+    let d=Math.abs(a2-a1); if(d>Math.PI) d=2*Math.PI-d; jit+=d; n++;
+  }
+  jit = n? jit/n : 0;
+  const accS = clamp(1-(0.7*mean+0.3*p90)/26);
+  const smooth = clamp(1-Math.max(0,jit-0.06)/0.4);
+  const score = Math.round(100*clamp(cov/0.97)*(0.7*accS+0.3*smooth));
+  return {cov, score};
+}
+
+/* --- 入力 --- */
+const pos = e => {
+  const r=cv.getBoundingClientRect();
+  if(PORT){ const sx=(e.clientX-r.left)*H/r.width, sy=(e.clientY-r.top)*W/r.height; return [sy, H-sx]; }
+  return [(e.clientX-r.left)*W/r.width, (e.clientY-r.top)*H/r.height];
+};
+cv.addEventListener("pointerdown", e=>{
+  if(G.phase!=="cut") return;
+  e.preventDefault();
+  const p=pos(e);
+  if(dist(p,G.guide[0])>64){ flash("朱い「入」の点から始めよ"); return; }
+  G.stroke=[p]; G.sd=[minDist(p,G.guide)]; G.drawing=true; G.msg=null;
+  cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener("pointermove", e=>{
+  if(!G.drawing) return;
+  const p=pos(e), last=G.stroke[G.stroke.length-1];
+  if(dist(p,last)<3) return;
+  G.stroke.push(p); G.sd.push(minDist(p,G.guide));
+});
+const endStroke = ()=>{
+  if(!G.drawing) return;
+  G.drawing=false;
+  const c=CUTS[G.cut], st=G.stroke;
+  const ev = st.length>=3 ? evaluate(st, G.guide) : null;
+  if(!ev || ev.cov<0.85){
+    flash(ev ? "切り足りぬ。「出」まで引き切れ" : "もう一度、一息で");
+    G.stroke=null; return;
+  }
+  const end = st[st.length-1];
+  G.scores.push(ev.score);
+  G.marks.push({pts:st.map(p=>toScreen(p,c.flip)), side:G.cut===0?"none":(c.flip?"b":"a"), col:gcol(ev.score)});
+  G.pops.push({x:end[0], y:end[1], text:`${grade(ev.score)}　${ev.score}`, col:gcol(ev.score), t0:performance.now()});
+  G.stroke=null; G.phase="anim";
+  $("#gHint").textContent = `${grade(ev.score)}。`;
+  setHud();
+  afterCut();
+};
+cv.addEventListener("pointerup", endStroke);
+cv.addEventListener("pointercancel", endStroke);
+
+function flash(t){ G.msg={t, t0:performance.now()}; }
+
+function flipTo(v,dur,cb){ G.fa={from:G.flipV,to:v,t0:performance.now(),dur,cb}; }
+function afterCut(){
+  G.cut++;
+  if(G.cut===1) T.h=[-46,0];
+  if(G.cut===3){
+    setTimeout(()=>{ $("#gHint").textContent="魚を裏返す……"; flipTo(1,900,prepCut); },600);
+  } else if(G.cut===5){
+    setTimeout(()=>flipTo(0,800,()=>{
+      T.h=[-62,0]; T.u=[0,-62]; T.l=[0,62]; G.phase="split"; G.splitAt=performance.now();
+      setTimeout(finish,1800);
+    }),600);
+  } else setTimeout(prepCut,450);
+}
+
+function finish(){
+  const total = Math.round(G.scores.reduce((a,b)=>a+b,0)/CUTS.length);
+  const before = rankIndex(store.xp);
+  store.xp += total; store.plays++; store.best = Math.max(store.best,total); persist();
+  const after = rankIndex(store.xp);
+  G.phase="result";
+  setHud(); renderMichi();
+  $("#gHint").textContent = "";
+  $("#gRes").innerHTML = `<div class="res">
+    <div class="r1">総合</div>
+    <div class="r2">${total} 点　${rankTitle(total)}</div>
+    <div class="r3">修行点 +${total}（累計 ${store.xp}）　最高 ${store.best} 点</div>
+    <table>${CUTS.map((c,i)=>`<tr><td>第${toKanji(i+1)}手　${c.name}</td><td>${G.scores[i]}</td></tr>`).join("")}</table>
+    ${after>before?`<div class="up">昇進　「${RANKS[after].t}」</div>`:""}
+    <div class="btns"><button class="cta" id="gAgain">もう一匹</button><button class="cta ghost" id="gMichi">道を見る</button></div>
+  </div>`;
+  $("#gAgain").onclick = startGame;
+  $("#gMichi").onclick = ()=>show("michi");
+  $("#gRes").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+/* --- 描画 --- */
+function piece(a,b,o){
+  ctx.save(); ctx.translate(o[0],o[1]); ctx.clip(a); if(b) ctx.clip(b);
+  ctx.drawImage(fc,0,0,W,H); ctx.restore();
+}
+function drawFish(){
+  const split = Math.abs(O.u[1])>.5 || Math.abs(O.l[1])>.5;
+  if(!split && Math.abs(O.h[0])<.5){ ctx.drawImage(fc,0,0,W,H); return; }
+  piece(headP,null,O.h);
+  if(!split){ piece(Rp,null,[0,0]); return; }
+  piece(Rp,upP,O.u); piece(Rp,stripP,O.s); piece(Rp,loP,O.l);
+}
+function line(pts,w,col,dash){
+  ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+  ctx.lineWidth=w; ctx.strokeStyle=col; ctx.setLineDash(dash||[]); ctx.stroke(); ctx.setLineDash([]);
+}
+const FONT = s => `${s}px "Yuji Syuku","Shippori Mincho B1","Hiragino Mincho ProN",serif`;
+function label(text,x,y,size,col,alpha=1){
+  upright(x,y,()=>{
+    ctx.globalAlpha=alpha; ctx.font=FONT(size); ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.lineWidth=4; ctx.strokeStyle="rgba(246,241,228,.95)"; ctx.strokeText(text,0,0);
+    ctx.fillStyle=col; ctx.fillText(text,0,0);
+  });
+}
+
+let last=performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  if(!$("#keiko").classList.contains("on")){ last=now; return; }
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  // 裏返しアニメ
+  if(G.fa){
+    const k=clamp((now-G.fa.t0)/G.fa.dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    G.flipV = G.fa.from+(G.fa.to-G.fa.from)*e;
+    if(k>=1){ const cb=G.fa.cb; G.fa=null; cb&&cb(); }
+  }
+  const f=1-Math.exp(-dt*7);
+  for(const k in O){ O[k][0]+=(T[k][0]-O[k][0])*f; O[k][1]+=(T[k][1]-O[k][1])*f; }
+
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  if(PORT){ ctx.translate(H,0); ctx.rotate(Math.PI/2); }
+  ctx.drawImage(board,0,0,W,H);
+  // 魚（裏返し変形つき）
+  const sy=Math.cos(Math.PI*G.flipV);
+  if(Math.abs(sy)>.03){
+    ctx.save(); ctx.translate(0,MID); ctx.scale(1,sy); ctx.translate(0,-MID);
+    ctx.shadowColor="rgba(40,24,6,.35)"; ctx.shadowBlur=14; ctx.shadowOffsetY=6;
+    drawFish();
+    ctx.shadowColor="transparent";
+    ctx.restore();
+  }
+  // 切り跡
+  if(G.cut<5 && !G.fa){
+    const side = G.flipV>=.5 ? "b":"a";
+    for(const m of G.marks){ if(m.side!==side) continue;
+      line(m.pts,4.5,"rgba(30,16,6,.75)"); line(m.pts,1.6,m.col); }
+  }
+  // 案内線
+  if(G.phase==="cut"){
+    const gd=G.guide, s=gd[0], e=gd[gd.length-1], pul=(Math.sin(now/260)+1)/2;
+    line(gd,44,"rgba(179,38,30,.10)");
+    line(gd,6,"rgba(255,255,255,.6)");
+    line(gd,2.6,"#b3261e",[9,8]);
+    ctx.beginPath(); ctx.arc(s[0],s[1],13+pul*5,0,7); ctx.fillStyle="rgba(179,38,30,.22)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(s[0],s[1],11,0,7); ctx.fillStyle="#b3261e"; ctx.fill();
+    ctx.strokeStyle="#f6f1e4"; ctx.lineWidth=2; ctx.stroke();
+    ctx.font=FONT(14); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#f6f1e4";
+    upright(s[0],s[1]+1,()=>ctx.fillText("入",0,0));
+    ctx.beginPath(); ctx.arc(e[0],e[1],10,0,7); ctx.fillStyle="rgba(246,241,228,.9)"; ctx.fill();
+    ctx.strokeStyle="#b3261e"; ctx.lineWidth=2.4; ctx.stroke();
+    ctx.fillStyle="#b3261e"; upright(e[0],e[1]+1,()=>ctx.fillText("出",0,0));
+  }
+  // 今引いている筋
+  if(G.stroke && G.stroke.length>1){
+    const st=G.stroke;
+    ctx.lineCap="round";
+    for(let i=1;i<st.length;i++){
+      const d=G.sd[i];
+      ctx.beginPath(); ctx.moveTo(st[i-1][0],st[i-1][1]); ctx.lineTo(st[i][0],st[i][1]);
+      ctx.lineWidth=8; ctx.strokeStyle="rgba(30,16,6,.55)"; ctx.stroke();
+    }
+    for(let i=1;i<st.length;i++){
+      const d=G.sd[i];
+      ctx.beginPath(); ctx.moveTo(st[i-1][0],st[i-1][1]); ctx.lineTo(st[i][0],st[i][1]);
+      ctx.lineWidth=3.4; ctx.strokeStyle= d<9?"#fff6cf": d<18?"#f0a64a":"#e0453a"; ctx.stroke();
+    }
+    const p=st[st.length-1]; ctx.beginPath(); ctx.arc(p[0],p[1],5,0,7); ctx.fillStyle="#fff"; ctx.fill();
+    ctx.lineCap="butt";
+  }
+  // 結果の文字
+  G.pops=G.pops.filter(p=>now-p.t0<1700);
+  for(const p of G.pops){
+    const k=(now-p.t0)/1700, y=p.y-20-k*36, a=k<.12?k/.12:clamp(1-(k-.6)/.4);
+    if(PORT) label(p.text,clamp(p.x-20-k*36,50,W-50),clamp(p.y,84,H-84),30,p.col,a);
+    else label(p.text,clamp(p.x,90,W-90),clamp(y,24,H-20),30,p.col,a);
+  }
+  if(G.msg){
+    const k=(now-G.msg.t0)/1800;
+    if(k>=1) G.msg=null;
+    else if(PORT) label(G.msg.t,W-44,H/2,20,"#b3261e",clamp(1-(k-.6)/.4));
+    else label(G.msg.t,W/2,H-34,24,"#b3261e",clamp(1-(k-.6)/.4));
+  }
+  // 三枚の名札
+  if(G.phase==="split"||G.phase==="result"){
+    const a=clamp((now-G.splitAt)/700);
+    label("上身",430,MID-62-52,26,"#1c1a17",a);
+    label("中骨",430,MID+4,26,"#1c1a17",a);
+    label("下身",430,MID+62+60,26,"#1c1a17",a);
+  }
+}
+requestAnimationFrame(frame);
+
+renderMichi(); setHud();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
